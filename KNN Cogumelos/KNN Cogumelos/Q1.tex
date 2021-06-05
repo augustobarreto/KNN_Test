@@ -1,0 +1,55 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{nd3} %% This is package for typesetting derivations.
+
+
+\date{\today}
+
+\begin{document}
+
+
+O propósito deste projeto é desenvolver um algoritmo que use características dos cogumelos para ajudar a identificar se eles são comestíveis ou não. Essas características são informações como cor, forma, cheiro e outros fatores que podem ajudar na caracterização e classificação de novos cogumelos. Para tal, será usada a base de dados de cogumelos da UCI, que conta com milhares de amostras de cogumelos, cada um caracterizado por D=22 atributos listados na página da UCI. Ou seja, dado um conjunto de cogumelos para o qual é sabido se eles são comestíveis ou não, seu algoritmo deve inferir se congumelos de um outro conjunto são comestíveis ou não. Matematicamente, após a conversão de atributos em números, representaremos as amostras como vetores \textbf{x} {\in} \textbf{{X\textsuperscript{D}}}.
+
+\vspace{1.0cm}
+
+Para esta tarefa você deve implementar o algoritmo de k-vizinhos mais próximos. Trata-se de um dos classificadores mais simples para aprendizado de máquina (ou reconhecimento de padrões). Como todo classificador supervisionado, ele utiliza um conjunto de \textbf{treinamento} e um conjunto de \textbf{teste}.
+
+\begin{itemize}
+\item  O conjunto de \textbf{treinamento} é fornecido para permitir que o algoritmo possa modelar o problema. Esse conjunto contém amostras para as quais sabemos tanto os seus atributos como seus rótulos.
+\item Já o conjunto de \textbf{teste} simula uma aplicação do algoritmo (deployment) e contém amostras para as quais sabemos seus atributos mas \textbf{não} sabemos seus rótulos. O objetivo é justamente inferiros rótulos dessas novas amostras.
+\end{itemize}
+
+No classificador de \textbf{K}-vizinhos mais próximos, como o próprio nome já diz, a inferência de uma amostra de teste é feita baseada no rótulo das \textbf{K} amostras de treinamento que são mais próximas a ele. Ou Seja, o seguinte algoritmo é aplicado:
+
+\begin{enumerate}
+\item  Leia o valor de \textbf{K}, um número inteiro.
+\item Leia o valor de \textbf{\emph{Ntrain}}, um número inteiro que indica quantas amostras de treinamento serão dadas.
+\item Leia o valor de \textbf{\emph{Ntest}}, um número inteiro que indica quantas amostras de teste serão dadas.
+\item Leia todos os vetores de treinamento \textbf{\emph{X\textsuperscript{train}}}, ou seja, leia uma matriz de \textbf{\emph{Ntrain}} linhas (cogumelos) e \textbf{D} colunas (atributos), onde cada linha representa uma amostra.
+\item No problema desse projeto, os dados são fornecidos como uma sequência de caracteres separados por espaço. Para usar uma métrica numérica, é necessário converter esses caracteres em números. Para tal, utilize o "vocabulário" de atributos disponível na \textbf{\emph{seção Attribute Information na base de dados}}, de forma que o valor do atributo listado primeiro é convertido ao número 0, o segundo a 1, e assim por diante. Por exemplo, o terceiro atributo de cogumelos (ou seja a terceira coluna de dados) se chama cap-color e pode assumir os seguintes valores:  brown = 'n', buff = 'b', cinammon = 'c', gray = 'g', green = 'r',pink = 'p', pruple = 'u', red = 'e', white = 'w', yellow = 'y'.  Converta o caractere 'n' para 0, 'b' para 1, 'c' para 2, 'g' para 3 e assim por diante. Faça isso para todos os atributos.
+\item Dada a codificação acima, note que cada atributo poderá ter uma escala diferente da dos outros atributos. Por exemplo, alguns atributos poderão assumir apenas 2 valores e por isso assumirão no máximo valor 1, enquanto que outros podem assumir um valor maior que 10. Dada a maneira em que as amostras são comparadas, isso pode injustamente dar mais valor a certos atributos do que outros, sendo que não sabemos qual a relevância real de cada atributo. Para igualar a relevância dos atributos, os dados devem ser normalizados (ou \textbf{padronizados}). Para tal, é preciso calcular o vetor \textbf{$\mu$} de médias e o vetor \textbf{$\sigma$} de desvio padrão para todos os atributos. Detalhe importante: Ao calcular o desvio padrão, \textbf{não} use a correlação de Bessel, ou seja, para cada atributo indexado por j, use a seguinte fórmula: 
+
+$ \sigma = \sqrt{\frac{1}{Ntrain}\sum\limits_{i=1}^{Ntrain} (x_{i,j} - \mu_j )^{2}} $
+
+
+\item Para cada atributo, subtraia a média e divida o resultado pelo desvio padrão. Caso um atributo não varie no conjunto de treinamento (ou seja, o seu desvio padrão é 0), seu valor deve ser atribuído a 0.
+\item Leia os rótulos \textbf{\emph{Y\textsuperscript{train}}}, de todas as amostras de treinamento,ou seja, leia um vetor que contem \textbf{\emph{Ntrain}} elementos, onde cada linha possui apenas um caractere que indica o rótulo, podendo assumir o valor 'p' ou 'e' (de venenoso/poisonous e comestível/edible).
+\item Leia todos os vetores de \textbf{\emph{X\textsuperscript{test}}}, ou seja, leia uma matriz de \textbf{\emph{N\textsuperscript{test}}} linhas e \textbf{D} colunas, onde cada linha representa um cogumelo a ser classificado.
+\item Da mesma forma que é feita para o conjunto de treinamento, normalize os dados do conjunto de teste, porém, é importante que ao invés de se calcular a média e o desvio padrão novamente, sejam usados todos os mesmos vetores \textbf{$\mu$} e \textbf{$\sigma$} calculados usando o conjunto de \textbf{treinamento}.
+\item Para cada valor de \textbf{\emph{x\textsubscript{i}\textsuperscript{test}}}: 
+\end{enumerate}
+              
+\begin{enumerate}
+\item Calcule a distância euclidiana entre esse vetor \textbf{\emph{X\textsubscript{i}\textsuperscript{test}}} e todos os vetores de treinamento \textbf{\emph{x\textsuperscript{test}}}. Nota: para um par de vetores \textbf{a} e \textbf{b}, ambos contendo \textbf{D} elementos, a distância euclidiana é calculada pela seguinte fórmula:
+
+$ d(a,b) = \sqrt{\sum\limits_{j=1}^{D} (a_{j} - b_{j} )^{2}}$
+
+\item Verifique, entre os \textbf{K} vizinhos mais próximos de \textbf{\emph{X\textsubscript{i}\textsuperscript{test}}}, se a maioria deles (no conjunto de treinamento) é de cogumelos venenosos ('p') ou comestíveis ('e').
+\item Imprima o rótulo da classe marjoritária obtida no passo anterior ('p') ou ('e')
+\end{enumerate}
+
+
+
+
+\end{document}
